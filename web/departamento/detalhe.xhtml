@@ -1,0 +1,140 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"    
+                xmlns:f="http://java.sun.com/jsf/core"  
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:o="http://omnifaces.org/ui"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                template="/WEB-INF/templates/Layout.xhtml"
+                xmlns:b="http://bootsfaces.net/ui">
+    <ui:define name="content">
+
+        <f:metadata>
+            <o:viewParam name="departamento" value="#{departamentoBean.departamento}" converter="departamentoConverter"/>
+            <f:viewParam name="" />
+            <f:event listener="#{departamentoBean.inicializarFuncionariosPorDepartamento()}" type="preRenderView"/>
+        </f:metadata>
+
+        <c:if test="#{departamentoBean.departamento.id eq null}">
+            <h1 class="aw-page-title">Cadastro de Departamento</h1>
+        </c:if>
+        <c:if test="#{departamentoBean.departamento.id != null}">
+            <h1 class="aw-page-title">Edição de Departamento</h1>
+        </c:if>
+        <div class="ui-fluid">
+            <h:form enctype="multipart/form-data" role="form" class="form-horizontal">
+
+
+                <h:inputHidden value="#{departamentoBean.departamento.id}"/>
+                <p:toolbar>
+                    <p:toolbarGroup class="pull-left">
+                        <button type="button" onclick="javascript:history.back()" class="btn btn-default margin-right-10 pull-left"><i class="fa fa-arrow-left"></i> Voltar</button>
+                    </p:toolbarGroup>
+                    <p:toolbarGroup>
+                        <h:commandButton value="Salvar" action="#{departamentoBean.salvarDepartamento()}" class="btn btn-primary" 
+                                         onclick="setTimeout(function () {
+                                                     $('[id$=mensagem]').hide(1000);
+                                                 }, 4000);">
+                            <f:ajax render="@form" execute="@form"/>
+                        </h:commandButton>
+
+                    </p:toolbarGroup>
+
+                </p:toolbar>
+
+                <p:messages for="mensagem" id="mensagem" showSummary="false" showDetail="true" closable="true" ><p:autoUpdate/></p:messages>
+
+
+                <p:panelGrid columns="2" layout="grid" style="margin-top: 20px" styleClass="panelgrid-noborder"
+                             columnClasses="ui-grid-col-2, ui-grid-col-9">
+
+                    <h:panelGroup>
+                        <p:outputLabel value="Sigla" for="sigla" />
+                        <p:inputText id="sigla" value="#{departamentoBean.departamento.sigla}" required="true" />
+                        <p:message for="sigla" showSummary="false" showDetail="true" escape="true"/>
+                    </h:panelGroup>
+
+                    <h:panelGroup>
+                        <p:outputLabel value="Nome do Departamento" for="nome" />
+                        <p:inputText id="nome" value="#{departamentoBean.departamento.nome}" required="true" />
+                        <p:message for="nome" showSummary="false" showDetail="true" escape="true"/>
+                    </h:panelGroup>
+
+                    <h:panelGroup>
+                        <p:outputLabel value="Andar" for="piso" />
+                        <h:selectOneMenu id="piso" value="#{departamentoBean.departamento.piso}" class="form-control select" required="true" label="Andar">
+                            <f:selectItem value="#{null}" itemLabel="--SELECIONE--" noSelectionOption="true" itemEscaped="true"/>
+                            <f:selectItems value="#{departamentoBean.pisos}" var="piso" itemValue="#{piso}" itemLabel="#{piso.descricao}"/>
+                        </h:selectOneMenu>
+                        <p:message for="piso" showSummary="false" showDetail="true" escape="true"/>
+                    </h:panelGroup>
+
+
+                </p:panelGrid>
+            </h:form>
+            <hr/>
+            <div class="margin-top-20">
+                <h:form id="formulario" enctype="multipart/form-data">
+                    <p:dataTable id="tabelaPessoa" value="#{departamentoBean.funcionarios}" var="pessoa" tableStyleClass="table table-striped table-condensed dataTable table-hover" rows="10" class=""
+                                 paginator="true" widgetVar="pessoasTabela" emptyMessage="Nenhum pessoa cadastrado por enquanto..."
+                                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 rowsPerPageTemplate="10,15,20" filteredValue="#{pessoaBean.pessoasFiltrados}" sortBy="#{pessoa.nome}" sortOrder="ascending"
+                                 reflow="true" rowHover="true" selectionMode="single" rowKey="#{pessoa.id}">
+
+                        <p:ajax event="rowDblselect" listener="#{pessoaBean.onRowSelect}" />
+
+                        <f:facet name="header">
+                            <p:outputPanel style="display: inline; float: right;">
+                                <h:outputText value="Buscar: " />
+                                <p:inputText id="globalFilter" onkeyup="PF('pessoasTabela').filter()" placeholder="Digite sua busca"/>
+                            </p:outputPanel>
+                            <div style="clear: both;"></div>
+                        </f:facet>
+
+
+                        <p:column filterBy="#{pessoa.nome}" headerText="Nome" priority="1">
+                            <h:outputText value="#{pessoa.nome}"/>
+                        </p:column>
+                        <p:column filterBy="#{pessoa.cargoFuncao}" headerText="Cargo/Função" priority="1">
+                            <h:outputText value="#{pessoa.cargoFuncao}"/>
+                        </p:column>
+                        <p:column filterBy="#{pessoa.usuarioWindows}" headerText="Usuário Windows" priority="1">
+                            <h:outputText value="#{pessoa.usuarioWindows}"/>
+                        </p:column>
+                        <p:column headerText="Usuário" priority="1" style="width: 12em">
+                            <h:outputText value="#{pessoa.usuario.login}"/>
+                        </p:column>
+
+
+                        <p:column headerText="Ações" style="width: 6.2em;">
+
+                            <div class="form-horizontal">
+
+                                <p:button icon="ui-icon-pencil" class="btn btn-info waves-effect" outcome="/pessoa/cadastro">
+                                    <f:param name="pessoa" value="#{pessoa.id}"/>
+                                </p:button>
+
+                                <h:panelGroup rendered="#{configuracoesBean.configuracoes.habilitarRemocaoUsuarios}">
+                                    <p:commandButton icon="ui-icon-trash" class="btn btn-danger  waves-effect" action="#{pessoaBean.excluirPessoa(pessoa)}"
+                                                     update="formulario:tabelaPessoa">
+                                        <p:confirm header="Confirmação" message="Deseja realmente excluir #{pessoa.nome}?" icon="fa fa-fw fa-exclamation-triangle" />
+                                    </p:commandButton>
+
+                                    <p:confirmDialog global="true"  showEffect="fade" hideEffect="fade">
+                                        <p:commandButton value="Sim" type="button" styleClass="ui-confirmdialog-yes" icon="fa fa-fw fa-check" />
+                                        <p:commandButton value="Não" type="button" styleClass="ui-confirmdialog-no" icon="fa fa-fw fa-times" />
+                                    </p:confirmDialog>
+                                </h:panelGroup>
+                            </div>
+
+
+                        </p:column>
+                    </p:dataTable>
+                </h:form>
+            </div>
+            <div style="height: 20em;"></div>
+        </div>
+
+
+    </ui:define>
+</ui:composition>

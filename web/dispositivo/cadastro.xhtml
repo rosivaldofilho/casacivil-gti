@@ -1,0 +1,186 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"    
+                xmlns:f="http://java.sun.com/jsf/core"  
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:o="http://omnifaces.org/ui"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                template="/WEB-INF/templates/Layout.xhtml"
+                xmlns:b="http://bootsfaces.net/ui">
+    <ui:define name="content">
+        <f:metadata>
+            <o:viewParam name="dispositivo" value="#{dispositivoBean.dispositivo}" converter="dispositivoConverter"/>
+            <f:viewParam name="" />
+            <f:event listener="#{dispositivoBean.inicializarDepartamentos()}" type="preRenderView"/>
+            <f:viewParam name="" />
+            <f:event listener="#{dispositivoBean.inicializarResponsaveis()}" type="preRenderView"/>
+        </f:metadata>
+        <h1 class="aw-page-title">Cadastro de Dispositivo</h1>
+        <h:form id="formulario" enctype="multipart/form-data" role="form" class="form-horizontal">
+            <h:inputHidden value="#{dispositivoBean.dispositivo.id}"/>
+            <p:toolbar>
+                <p:toolbarGroup>
+                    <button type="button" onclick="javascript:history.back()" class="btn btn-default margin-right-10"><i class="fa fa-arrow-left"></i> Voltar</button>
+                    <h:commandButton value="Salvar" action="#{dispositivoBean.salvarDispositivo()}" class="btn btn-primary" 
+                                     onclick="setTimeout(function () {
+                                                 $('[id$=mensagem]').hide(1000);
+                                             }, 3500);">
+                        <f:ajax render="@form" execute="@form"/>
+                    </h:commandButton>
+                </p:toolbarGroup>
+                <p:toolbarGroup class="pull-right">
+                    <c:if test="#{dispositivoBean.dispositivo.id != null}">
+                        <h:link outcome="/dispositivo/detalhe" class="btn btn-warning" style="color:#FFF">
+                            <f:param name="dispositivo" value="#{dispositivoBean.dispositivo.id}"/>
+                            <i class="fa fa-external-link" aria-hidden="true"> Visualizar</i>
+                        </h:link>
+                    </c:if>
+                </p:toolbarGroup>
+            </p:toolbar>
+
+            <p:messages for="mensagem" id="mensagem" showSummary="false" showDetail="true" closable="true" ><p:autoUpdate/></p:messages>
+            <p:growl for="notificacao" id="growl" showSummary="false" showDetail="true"><p:autoUpdate/></p:growl>
+
+            <div class="ui-fluid">
+                <p:panelGrid columns="2" layout="grid" style="margin-top: 20px" styleClass="panelgrid-noborder"
+                             columnClasses="ui-grid-col-6, ui-grid-col-6">
+
+                    <h:panelGroup>
+                        <p:outputLabel value="Descrição" for="descricao" />
+                        <p:inputText id="descricao" value="#{dispositivoBean.dispositivo.descricao}" required="true" />
+                        <p:message for="descricao" showSummary="false" showDetail="true" escape="true"/>
+                    </h:panelGroup>
+
+                    <h:panelGroup>
+                        <p:outputLabel value="Data de Entrada" for="dataEntrada" />
+                        <h:outputScript name="/algaworks/javascripts/calendario_primefaces_locale_pt.js" />
+                        <p:calendar pattern="dd/MM/yyyy" id="dataEntrada" locale="pt"
+                                    navigator="true" pages="1" value="#{dispositivoBean.dispositivo.dataEntrada}" 
+                                    effect="fade" mask="99/99/9999" yearRange="c-70:c+0" maxdate="#{dispositivoBean.hoje()}"/>
+                    </h:panelGroup>
+                    <h:panelGroup rendered="#{dispositivoBean.dispositivo.id == null}">
+                        <p:outputLabel value="Patrimônio" for="patrimonio" />
+                        <p:inputText label="Patrimônio" value="#{dispositivoBean.dispositivo.patrimonio}"
+                                     disabled="#{dispositivoBean.dispositivo.id != null and !segurancaBean.administrador}" id="patrimonio" 
+                                     class="form-control" validator="patrimonioUniqueValidator" required="false"/>
+                        <p:message for="patrimonio" showSummary="false" showDetail="true" escape="true"/>
+                    </h:panelGroup>
+                    <h:panelGroup rendered="#{dispositivoBean.dispositivo.id != null}">
+                        <p:outputLabel value="Patrimônio" for="patrimonio" />
+                        <p:inputText label="Patrimônio" value="#{dispositivoBean.dispositivo.patrimonio}"
+                                     disabled="#{dispositivoBean.dispositivo.id != null and !segurancaBean.administrador}" id="patrimonioId" 
+                                     class="form-control" required="false"/>
+                        <p:message for="patrimonioId" showSummary="false" showDetail="true" escape="true"/>
+                    </h:panelGroup>
+
+                    <h:panelGroup rendered="#{dispositivoBean.dispositivo.id == null}">
+                        <p:outputLabel value="Número de Série" for="numeroSerie" />
+                        <p:inputText label="Número de Série" value="#{dispositivoBean.dispositivo.numeroSerie}" id="numeroSerie"
+                                     class="form-control" validator="numeroSerieUniqueValidator" required="false"/>
+                        <p:message for="numeroSerie" showSummary="false" showDetail="true" escape="true"/>
+                    </h:panelGroup>
+                    <h:panelGroup rendered="#{dispositivoBean.dispositivo.id != null}">
+                        <p:outputLabel value="Número de Série" for="numeroSerie" />
+                        <p:inputText label="Número de Série" value="#{dispositivoBean.dispositivo.numeroSerie}" id="numeroSerieId" 
+                                     class="form-control" required="false"/>
+                        <p:message for="numeroSerieId" showSummary="false" showDetail="true" escape="true"/>
+                    </h:panelGroup>
+
+                    <h:panelGroup>
+                        <p:outputLabel value="Tipo de Dispositivo" for="tipo" />
+                        <h:selectOneMenu id="tipo" value="#{dispositivoBean.dispositivo.tipo}" class="form-control select" required="true" label="Tipo de Dispositivo">
+                            <f:selectItem value="#{null}" itemLabel="--SELECIONE--" noSelectionOption="true" itemEscaped="true"/>
+                            <f:selectItems value="#{dispositivoBean.tiposDispositivo}" var="tipo" itemValue="#{tipo}" itemLabel="#{tipo.descricao}"/>
+                            <p:ajax update="nomenclaturaPanel"/>
+                        </h:selectOneMenu>
+                        <p:message for="tipo" showSummary="false" showDetail="true" escape="true"/>
+                    </h:panelGroup>
+
+                    <h:panelGroup>
+                        <p:outputLabel value="Endereço de Rede" for="ip" />
+                        <p:inputText id="ip" value="#{dispositivoBean.dispositivo.enderecoRede}" required="false" />
+                        <p:message for="ip" showSummary="false" showDetail="true" escape="true"/>
+                    </h:panelGroup>
+
+                    <h:panelGroup>
+                        <p:outputLabel value="Endereço de Físico (MAC)" for="ip" />
+                        <p:inputText id="mac" value="#{dispositivoBean.dispositivo.mac}" required="false" />
+                        <p:message for="mac" showSummary="false" showDetail="true" escape="true"/>
+                    </h:panelGroup>
+
+                    <h:panelGroup>
+                        <p:outputLabel value="Ponto de Rede" for="ponto" />
+                        <p:inputText id="ponto" value="#{dispositivoBean.dispositivo.pontoRede}" required="false" />
+                        <p:message for="ponto" showSummary="false" showDetail="true" escape="true"/>
+                    </h:panelGroup>
+
+                    <h:panelGroup>
+                        <p:outputLabel value="Departamento" for="departamento" />
+                        <h:selectOneMenu class="form-control select" id="departamento" label="Evento" 
+                                         value="#{dispositivoBean.dispositivo.departamento}"
+                                         required="true" converter="departamentoConverter">
+                            <f:selectItem itemLabel="-- SELECIONE --" noSelectionOption="true" />
+                            <f:selectItems value="#{dispositivoBean.departamentos}" var="departamento"
+                                           itemValue="#{departamento}" itemLabel="#{departamento.nome}"/>
+                            <p:ajax update="listaResponsaveis" listener="#{dispositivoBean.inicializarResponsaveis()}" />
+                        </h:selectOneMenu>
+                        <p:message for="departamento" showSummary="false" showDetail="true" escape="true"/>
+                    </h:panelGroup>
+
+                    <h:panelGroup id="listaResponsaveis">
+                        <p:outputLabel value="Responsável" for="responsavel" />
+                        <h:selectOneMenu class="form-control select" id="responsavel" label="Evento" 
+                                         value="#{dispositivoBean.dispositivo.responsavel}"
+                                         required="false" converter="pessoaConverter">
+                            <f:selectItem itemLabel="-- SELECIONE --" noSelectionOption="true" />
+                            <f:selectItems value="#{dispositivoBean.responsaveis}" var="responsavel"
+                                           itemValue="#{responsavel}" itemLabel="#{responsavel.nome}"/>
+                        </h:selectOneMenu>
+                        <p:message for="responsavel" showSummary="false" showDetail="true" escape="true"/>
+                    </h:panelGroup>
+
+                    <h:panelGroup id="nomenclaturaPanel">
+                        <h:panelGroup rendered="#{dispositivoBean.dispositivo.tipo.descricao == 'Computador'}">
+                            <p:outputLabel value="Nomenclatura" for="nomenclatura" />
+                            <p:inputText label="Nomenclatura" value="#{dispositivoBean.dispositivo.nomenclatura}" id="nomenclatura" 
+                                         class="form-control" required="true"/>
+                            <p:message for="nomenclatura" showSummary="false" showDetail="true" escape="true"/>
+                        </h:panelGroup>
+                    </h:panelGroup>
+
+
+                </p:panelGrid>
+            </div>
+        </h:form>
+
+<!--        <c:if test="#{dispositivoBean.dispositivo.id != null}">
+
+            <h:form id="formAlteraSenha" enctype="multipart/form-data" role="form" class="form-horizontal">
+                <p:dialog  header="Alterar Senha" widgetVar="dialogoSenha" modal="true" responsive="true" >
+                    <h:inputHidden value=""/>
+                    <p:outputLabel value="Nova Senha" for="senha01" />
+                    <h:panelGroup>
+                        <p:password id="senha01" value="" label="Senha"
+                                    match="senha02" required="true" class="form-control" feedback="true"
+                                    promptLabel="Digite a senha" weakLabel="Força da senha : Fraca" inline="true"
+                                    goodLabel="Força da senha : Média" strongLabel="Força da senha : Forte"
+                                    validatorMessage="As duas senhas devem ser iguais"/>
+                        <p:message for="senha01" showSummary="false" showDetail="true" escape="true"/>
+                    </h:panelGroup>
+                    <div class="margin-top-10">
+                        <p:outputLabel value="Confirme Nova Senha" for="senha02" />
+                        <h:panelGroup>
+                            <p:password id="senha02" value=""  required="true"
+                                        label="Confirmação de Senha" class="form-control"/>
+                            <p:message for="senha02" showSummary="false" showDetail="true" escape="true"/>
+                        </h:panelGroup>
+                    </div>
+                    <f:facet name="footer">
+                        <p:commandButton value="Alterar" update="formAlteraSenha" class="btn btn-primary pull-right" action="" />
+                        <div class="clearfix"></div>
+                    </f:facet> 
+                </p:dialog>
+            </h:form>
+        </c:if>-->
+    </ui:define>
+</ui:composition>

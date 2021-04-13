@@ -1,0 +1,109 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/templates/Layout.xhtml"
+                xmlns:b="http://bootsfaces.net/ui">
+    <ui:define name="content">
+        <f:metadata>
+            <f:event listener="#{dispositivoBean.inicializarDispositivos()}" type="preRenderView"/>
+        </f:metadata>
+        <h1 class="aw-page-title">Usuários</h1>
+        <h:form>
+            <!--<h:commandLink class="">
+                    <p:graphicImage library="images" name="/icones/Graphicloads-Filetype-Excel-xls.ico"  width="32"/>
+                    <p:dataExporter type="pdf" target="tabelaDispositivo" fileName="cars" pageOnly="true"/>
+                </h:commandLink>
+                <h:commandLink class="btn btn-success pull-right margin-bottom-15">
+                <p:dataExporter type="xlsx" target="tabelaDispositivo" fileName="RELATORIO.xlsx" pageOnly="true"/>
+                <h:outputText value=" Exportar (.xlsx)"/>
+            </h:commandLink>
+            -->
+
+            <p:toolbar class="margin-bottom-20">
+                <p:toolbarGroup class="pull-left">
+                    <button type="button" onclick="javascript:history.back()" class="btn btn-default margin-right-10 pull-left"><i class="fa fa-arrow-left"></i> Voltar</button>
+                </p:toolbarGroup>
+            </p:toolbar>
+
+            <div class="clear clearfix"></div>
+
+
+            <p:dataTable id="tabelaDispositivo" value="#{dispositivoBean.dispositivos}" var="dispositivo"
+                         tableStyleClass="table table-striped table-condensed dataTable table-hover" class=""
+                         paginator="false" widgetVar="dispositivosTabela" emptyMessage="Nenhum dispositivo cadastrado por enquanto..."
+                         rowsPerPageTemplate="10,25,50" sortBy="#{dispositivo.nomenclatura}" sortOrder="ascending"
+                         reflow="false" rowHover="true" selectionMode="single" rowKey="#{dispositivo.id}">
+
+                <p:ajax event="rowDblselect" listener="#{dispositivoBean.onRowSelect}" />
+
+                <f:facet name="header">
+                    <p:outputPanel style="display: inline; float: right;">
+                        <h:outputText value="Exportar" class="margin-right-10" /><br/>
+
+                        <div style="float:right; padding-bottom: 3px;">
+                            <h:commandLink class="margin-right-10">
+                                <p:graphicImage library="algaworks" name="/images/icons/xls.png" width="24"/>
+                                <p:dataExporter type="xls" target="tabelaDispositivo" fileName="dispositivos" />
+                            </h:commandLink>
+
+                            <h:commandLink class="margin-right-10">
+                                <p:graphicImage library="algaworks" name="/images/icons/xlsx.png" width="24"/>
+                                <p:dataExporter type="xlsxstream" target="tabelaDispositivo" fileName="dispositivos" />
+                            </h:commandLink>
+
+                            <h:commandLink class="margin-right-10">
+                                <p:graphicImage library="algaworks" name="/images/icons/pdf.png" width="24"/>
+                                <p:dataExporter type="pdf" target="tabelaDispositivo" fileName="dispositivos"/>
+                            </h:commandLink>
+
+                            <h:commandLink class="margin-right-10">
+                                <p:graphicImage library="algaworks" name="/images/icons/csv.png" width="24"/>
+                                <p:dataExporter type="csv" target="tabelaDispositivo" fileName="dispositivos" />
+                            </h:commandLink>
+
+                        </div>
+                    </p:outputPanel>
+                    <div style="clear: both;"></div>
+                </f:facet>
+                
+                <p:column headerText="Nomenclatura" priority="1">
+                    <h:outputText value="#{dispositivo.nomenclatura}"/>
+                </p:column>
+                
+                <p:column headerText="IP" priority="3">
+                    <h:outputText value="#{dispositivo.enderecoRede}"/>
+                </p:column>
+                
+                <p:column headerText="Endereço Físico" priority="3">
+                    <h:outputText value="#{dispositivo.mac}"/>
+                </p:column>
+
+                <p:column headerText="Nº de Série" priority="3">
+                    <h:outputText value="#{dispositivo.numeroSerie}"/>
+                </p:column>
+                
+                <p:column headerText="Responsável" priority="1">
+                    <h:outputText value="#{dispositivo.responsavel.nome}"/>
+                </p:column>
+                
+                <p:column headerText="Tipo" priority="3">
+                    <h:outputText value="#{dispositivo.tipo.descricao}"/>
+                </p:column>
+
+                <p:column headerText="Descrição" priority="2">
+                    <h:outputText value="#{dispositivo.descricao}"/>
+                </p:column>
+
+                <p:column headerText="Patrimônio" priority="3">
+                    <h:outputText value="#{dispositivo.patrimonio}"/>
+                </p:column>
+                
+
+
+
+            </p:dataTable>
+        </h:form>
+    </ui:define>
+</ui:composition>

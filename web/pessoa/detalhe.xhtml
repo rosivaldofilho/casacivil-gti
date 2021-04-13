@@ -1,0 +1,137 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"    
+                xmlns:f="http://java.sun.com/jsf/core"  
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:o="http://omnifaces.org/ui"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                template="/WEB-INF/templates/Layout.xhtml"
+                xmlns:b="http://bootsfaces.net/ui">
+    <ui:define name="content">
+        <f:metadata>
+            <o:viewParam name="pessoa" value="#{pessoaBean.pessoa}" converter="pessoaConverter"/>
+            <f:viewParam name="" />
+            <f:event listener="#{pessoaBean.inicializarDispositivosPorPessoa()}" type="preRenderView"/>
+        </f:metadata>
+        <h1 class="aw-page-title">Cadastro de Usuário</h1>
+
+        <h:inputHidden value="#{pessoaBean.pessoa.id}"/>
+        <p:toolbar>
+            <p:toolbarGroup>
+                <button type="button" onclick="javascript:history.back()" class="btn btn-default margin-right-10"><i class="fa fa-arrow-left"></i> Voltar</button>
+                <h:commandButton value="Salvar" action="#{pessoaBean.salvarPessoa()}" class="btn btn-primary" 
+                                 onclick="setTimeout(function () {
+                                             $('[id$=mensagem]').hide(1000);
+                                         }, 3500);">
+                    <f:ajax render="@form" execute="@form"/>
+                </h:commandButton>
+            </p:toolbarGroup>
+            <p:toolbarGroup class="pull-right">
+                <h:panelGroup>
+                    <a href="#{facesContext.externalContext.requestContextPath}/usuario/#{pessoaBean.pessoa.id}/edicao" class="btn btn-danger" style="color:#FFF"><i class="fa fa-pencil"></i> Editar</a>
+                </h:panelGroup>
+            </p:toolbarGroup>
+        </p:toolbar>
+
+        <p:messages for="mensagem" id="mensagem" showSummary="false" showDetail="true" closable="true" ><p:autoUpdate/></p:messages>
+        <p:growl for="notificacao" id="growl" showSummary="false" showDetail="true" ><p:autoUpdate/></p:growl>
+
+        <div class="ui-fluid">
+            <p:panelGrid columns="2" layout="grid" style="margin-top: 20px" styleClass="panelgrid-noborder"
+                         columnClasses="ui-grid-col-6, ui-grid-col-6">
+
+
+                <h:panelGroup>
+                    <p:outputLabel value="Nome:" for="nome" />
+                    <h:outputText id="nome" value=" #{pessoaBean.pessoa.nome}" />
+                </h:panelGroup>
+                <h:panelGroup>
+                    <p:outputLabel value="Usuário Windows:" for="usuarioWindows" />
+                    <h:outputText id="usuarioWindows" value=" #{pessoaBean.pessoa.usuarioWindows}" />
+                </h:panelGroup>
+                <h:panelGroup>
+                    <p:outputLabel value="Cargo/Função:" for="cargoFuncao" />
+                    <h:outputText id="cargoFuncao" value=" #{pessoaBean.pessoa.cargoFuncao}" />
+                </h:panelGroup>
+
+                <h:panelGroup>
+                    <p:outputLabel value="E-mail:" for="email" />
+                    <h:outputText id="email" value=" #{pessoaBean.pessoa.email}" />
+                </h:panelGroup>
+
+                <h:panelGroup>
+                    <p:outputLabel value="Departamento:" for="departamento" />
+                    <a href="/departamento/#{pessoaBean.pessoa.departamento.id}" class="btn btn-default">
+                        <h:outputText id="departamento" value=" #{pessoaBean.pessoa.departamento.nome}" />
+                        <i class="fa fa-external-link" aria-hidden="true"></i>
+                    </a>
+
+                </h:panelGroup>
+
+
+            </p:panelGrid>
+
+
+        </div>
+        <hr/>
+        <h:form id="formulario" class="margin-top-20">
+            <p:dataTable id="tabelaDispositivo" value="#{pessoaBean.dispositivos}" var="dispositivo" tableStyleClass="table table-striped table-condensed dataTable table-hover" rows="10" class=""
+                         paginator="true" widgetVar="dispositivosTabela" emptyMessage="Nenhum dispositivo cadastrado por enquanto..."
+                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                         rowsPerPageTemplate="10,15,20" sortBy="#{dispositivo.dataCadastro}" sortOrder="ascending"
+                         reflow="true" rowHover="true" selectionMode="single" rowKey="#{dispositivo.id}">
+
+                <p:ajax event="rowDblselect" listener="#{dispositivoBean.onRowSelect}" />
+
+                <f:facet name="header">
+                    <p:outputPanel style="display: inline; float: right;">
+                        <h:outputText value="Buscar: " />
+                        <p:inputText id="globalFilter" onkeyup="PF('dispositivosTabela').filter()" placeholder="Digite sua busca"/>
+                    </p:outputPanel>
+                    <div style="clear: both;"></div>
+                </f:facet>
+
+                <p:column headerText="" priority="1" style="width: 5em">
+                    <h:graphicImage library="algaworks" 
+                                    name="/images/icons/#{dispositivo.tipo.descricao.toLowerCase()}.ico"
+                                    class="img-circle img-responsive" width="40"/>
+                </p:column>
+
+                <p:column filterBy="#{dispositivo.tipo.descricao}" headerText="Tipo" priority="3">
+                    <h:outputText value="#{dispositivo.tipo.descricao}"/>
+                </p:column>
+
+                <p:column filterBy="#{dispositivo.descricao}" headerText="Descrição" priority="1">
+                    <h:outputText value="#{dispositivo.descricao}"/>
+                </p:column>
+
+                <p:column filterBy="#{dispositivo.nomenclatura}" headerText="Nomenclatura" priority="3">
+                    <h:outputText value="#{dispositivo.nomenclatura}"/>
+                </p:column>
+
+                <p:column filterBy="#{dispositivo.numeroSerie}" headerText="Número de Série" priority="2">
+                    <h:outputText value="#{dispositivo.numeroSerie}"/>
+                </p:column>
+
+
+
+
+                <p:column headerText="Ações" style="width: 6.2em;">
+
+                    <div class="form-horizontal">
+                        <p:button icon="ui-icon-extlink" class="btn btn-success waves-effect" outcome="/dispositivo/detalhe">
+                            <f:param name="dispositivo" value="#{dispositivo.id}"/>
+                        </p:button>
+                        <p:button icon="ui-icon-pencil" class="btn btn-info waves-effect" outcome="/dispositivo/cadastro">
+                            <f:param name="dispositivo" value="#{dispositivo.id}"/>
+                        </p:button>
+
+                    </div>
+
+
+                </p:column>
+            </p:dataTable>
+        </h:form>
+
+    </ui:define>
+</ui:composition>

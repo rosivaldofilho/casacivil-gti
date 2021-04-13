@@ -1,0 +1,162 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:b="http://bootsfaces.net/ui"
+                xmlns:o="http://omnifaces.org/ui"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+                template="/WEB-INF/templates/Front.xhtml">
+    <ui:define name="content">
+        <f:metadata>
+            <o:viewParam name="dispositivo" value="#{dispositivoBean.dispositivo}" converter="dispositivoConverter"/>
+        </f:metadata>
+        <ol class="breadcrumb">
+            <h:outputText value="#{dispositivoBean.dispositivo.descricao}" class="text-primary"/>
+
+
+            <span class="pull-right">
+                <c:if test="#{segurancaBean.servidor || segurancaBean.administrador}">
+                    <a href="#{facesContext.externalContext.requestContextPath}/dispositivos" data-original-title="Remove this user" data-toggle="tooltip" type="button" 
+                       class="btn btn-primary margin-right-5">
+                        <i class="glyphicon glyphicon-list"></i> Listar</a>
+
+                    <h:outputLink value="/dispositivo/cadastro.xhtml?dispositivo=#{dispositivoBean.dispositivo.id}" 
+                                  class="btn btn-warning" title="Editar Dispositivo" >
+                        <i class="fa fa-edit" aria-hidden="true"> Editar</i>
+                    </h:outputLink>
+                </c:if>
+                <c:if test="#{segurancaBean.logout}">
+                    <a href="#{facesContext.externalContext.requestContextPath}/" class="btn btn-primary">
+                        <i class="fa fa-sign-in" aria-hidden="true"> Entrar</i>
+                    </a>
+                </c:if>
+            </span>
+            <div class="clearfix"></div>
+        </ol>
+
+        <div class="ui-fluid" style="margin-top: -10px">
+
+            <b:panel style="border: none;">
+
+                <div class="conteudo-dispositivo">
+
+
+
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8 col-xs-offset-0 col-sm-offset-0 col-md-offset-2 col-lg-offset-2 toppad" >
+
+
+                            <div class="col-md-3 col-lg-3 " align="center"> 
+                                <h:graphicImage library="algaworks" 
+                                                name="/images/icons/#{dispositivoBean.dispositivo.tipo.descricao.toLowerCase()}.ico"
+                                                class="img-circle img-responsive"/>
+
+                                <div id="qrcode" style="width:100px; height:100px; margin-top:15px; margin-bottom: 20px;"></div>
+                            </div>
+
+                            <div class=" col-md-9 col-lg-9 ">
+
+                                <table class="table table-user-information">
+                                    <tbody>
+                                        <tr>
+                                            <td>Descrição:</td>
+                                            <td><h:outputText value="#{dispositivoBean.dispositivo.descricao}"/></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Tipo:</td>
+                                            <td><h:outputText value="#{dispositivoBean.dispositivo.tipo.descricao}"/></td>
+                                        </tr>
+                                        <c:if test="#{segurancaBean.administrador or segurancaBean.servidor}">
+                                            <c:if test="#{dispositivoBean.dispositivo.tipo.descricao.toUpperCase().equals('COMPUTADOR')}">
+                                                <tr>
+                                                    <td>Nomenclatura:</td>
+                                                    <td><strong><h:outputText value="#{dispositivoBean.dispositivo.nomenclatura}"/></strong></td>
+                                                </tr>
+                                            </c:if>
+                                            
+                                            <tr>
+                                                <td>IP:</td>
+                                                <c:if test="#{dispositivoBean.dispositivo.enderecoRede != ''}">
+                                                    <td><h:outputText value="#{dispositivoBean.dispositivo.enderecoRede}"/></td>
+                                                </c:if>
+                                                <c:if test="#{dispositivoBean.dispositivo.enderecoRede == ''}">
+                                                    <td>Dispositivo sem endereço de rede</td>
+                                                </c:if>
+                                            </tr>
+
+                                            <tr>
+                                                <td>Patrimônio:</td>
+                                                <td><h:outputText value="#{dispositivoBean.dispositivo.patrimonio}"/></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Nº de Série:</td>
+                                                <td><h:outputText value="#{dispositivoBean.dispositivo.numeroSerie}"/></td>
+                                            </tr>
+                                            
+                                            <tr>
+                                                <td>Endereço Físico:</td>
+                                                <c:if test="#{dispositivoBean.dispositivo.mac != null}">
+                                                    <td><h:outputText value="#{dispositivoBean.dispositivo.mac}"/></td>
+                                                </c:if>
+                                                <c:if test="#{dispositivoBean.dispositivo.mac == null}">
+                                                    <td>Dispositivo sem endereço Físico (MAC)</td>
+                                                </c:if>
+                                            </tr>
+
+                                            <tr>
+                                                <td>Ponto de Rede:</td>
+                                                <c:if test="#{dispositivoBean.dispositivo.pontoRede != null}">
+                                                    <td><h:outputText value="#{dispositivoBean.dispositivo.pontoRede}"/></td>
+                                                </c:if>
+                                                <c:if test="#{dispositivoBean.dispositivo.pontoRede == null}">
+                                                    <td>Dispositivo sem Ponto de Rede</td>
+                                                </c:if>
+                                            </tr>
+                                        </c:if>
+                                        <tr>
+                                            <td>Responsável:</td>
+                                            <td><strong><h:outputText value="#{dispositivoBean.dispositivo.responsavel.nome}"/></strong></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Departamento:</td>
+                                            <td><h:outputText value="#{dispositivoBean.dispositivo.departamento.nome}"/></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Data de Entrada:</td>
+                                            <td><h:outputText value="#{dispositivoBean.dispositivo.dataEntrada}">
+                                                    <f:convertDateTime pattern="dd/MM/yyyy" />
+                                                </h:outputText></td>
+                                        </tr>
+
+
+
+
+
+                                    </tbody>
+                                </table>
+
+                                <!--                                                                                <a href="#" class="btn btn-primary">My Sales Performance</a>
+                                                                                                                <a href="#" class="btn btn-primary">Team Sales Performance</a>-->
+                            </div>
+
+
+
+
+                        </div>
+                    </div>
+
+                </div>
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+            </b:panel>
+        </div>
+
+        <h:outputScript target="body" library="algaworks" name="javascripts/qrcode.min.js" />
+        <h:outputScript target="body" library="algaworks" name="javascripts/qrcode_detalhe.js" />
+
+    </ui:define>
+</ui:composition>

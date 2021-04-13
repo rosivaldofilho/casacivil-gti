@@ -1,0 +1,105 @@
+<pretty-config xmlns="http://ocpsoft.org/schema/rewrite-config-prettyfaces"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://ocpsoft.org/schema/rewrite-config-prettyfaces
+                      http://ocpsoft.org/xml/ns/prettyfaces/rewrite-config-prettyfaces.xsd">
+
+	<url-mapping id="index">
+		<pattern value="/" />
+		<view-id value="/index.xhtml" />
+	</url-mapping>
+        
+	<url-mapping id="login">
+		<pattern value="/login" />
+		<view-id value="/login.xhtml" />
+	</url-mapping>
+	
+        <url-mapping id="erro404">
+		<pattern value="/erro" />
+		<view-id value="/erro404.xhtml" />
+	</url-mapping>
+	
+        <url-mapping id="dashboard">
+		<pattern value="/dashboard" />
+		<view-id value="/dashboard.xhtml" />
+	</url-mapping>
+	
+	<url-mapping id="pessoa-lista">
+		<pattern value="/usuarios" />
+		<view-id value="/pessoa/lista.xhtml" />
+	</url-mapping>
+	
+        <url-mapping id="pessoa-cadastro">
+		<pattern value="/usuario/cadastro" />
+		<view-id value="/pessoa/cadastro.xhtml" />
+	</url-mapping>
+        
+        <url-mapping id="pessoa-edicao">
+		<pattern value="/usuario/#{pessoa}/edicao" />
+		<view-id value="/pessoa/cadastro.xhtml" />
+	</url-mapping>
+        
+        <url-mapping id="pessoa-detalhe">
+		<pattern value="/usuario/#{pessoa}" />
+		<view-id value="/pessoa/detalhe.xhtml" />
+	</url-mapping>
+        
+        <url-mapping id="dispositivo-lista">
+		<pattern value="/dispositivos" />
+		<view-id value="/dispositivo/lista.xhtml" />
+	</url-mapping>
+
+        <url-mapping id="dispositivo-cadastro">
+		<pattern value="/dispositivo/cadastro.xhtml" />
+		<view-id value="/dispositivo/cadastro.xhtml" />
+	</url-mapping>
+        
+	<url-mapping id="dispositivo-detalhe">
+		<pattern value="/dispositivo/#{dispositivo}" />
+		<view-id value="/dispositivo/detalhe.xhtml" />
+	</url-mapping>
+        
+        <url-mapping id="dispositivo-edicao">
+		<pattern value="/dispositivo/#{dispositivo}/edicao" />
+		<view-id value="/dispositivo/cadastro.xhtml" />
+	</url-mapping>
+        
+        <url-mapping id="dispositivo-relatorio">
+		<pattern value="/dispositivos/relatorio" />
+		<view-id value="/dispositivo/relatorio.xhtml" />
+	</url-mapping>
+        
+        <url-mapping id="departamento-cadastro">
+		<pattern value="/departamento/cadastro" />
+		<view-id value="/departamento/cadastro.xhtml" />
+	</url-mapping>
+        
+        <url-mapping id="departamento-lista">
+		<pattern value="/departamentos" />
+		<view-id value="/departamento/lista.xhtml" />
+	</url-mapping>
+        
+        <url-mapping id="departamento-detalhe">
+		<pattern value="/departamento/#{departamento}" />
+		<view-id value="/departamento/detalhe.xhtml" />
+	</url-mapping>
+        
+        <url-mapping id="departamento-edicao">
+		<pattern value="/departamento/#{departamento}/edicao" />
+		<view-id value="/departamento/cadastro.xhtml" />
+	</url-mapping>
+        
+        
+        <url-mapping id="configuracoes-lista">
+		<pattern value="/configuracoes" />
+		<view-id value="/configuracoes.xhtml" />
+	</url-mapping>
+	
+
+	<!-- 
+	<url-mapping id="jogador-edicao">
+		<pattern value="/jogadores/#{id: jogadorEdicaoBean.jogador.id}/edicao" />
+		<view-id value="/jogador-edicao.xhtml" />	
+		<action onPostback="false">#{jogadorEdicaoBean.buscar}</action>	
+	</url-mapping>
+	-->
+</pretty-config>

@@ -1,0 +1,102 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+                template="/WEB-INF/templates/Layout.xhtml"
+                xmlns:b="http://bootsfaces.net/ui">
+    <ui:define name="content">
+        <f:metadata>
+            <f:viewParam name="dummy" />
+            <f:event listener="#{dashBoardBean.inicializarDashADM()}" type="preRenderView" />
+        </f:metadata>
+
+
+        <h1 class="aw-page-title">Dashboard</h1>
+
+        <div class="col-md-12">
+
+
+            <div class="conteudo-dispositivo">
+                <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8 col-xs-offset-0 col-sm-offset-0 col-md-offset-2 col-lg-offset-2 toppad" >
+                    <div class="row">
+                        <b:column col-sm="4" col-md="6" col-lg="4">
+                            <h:link outcome="/pessoa/lista" style="text-decoration: none;">
+                                <b:thumbnail class="thumb">
+                                    <h:graphicImage library="algaworks" 
+                                                    name="/images/icons/usuarios.ico"
+                                                    class="img-responsive"
+                                                    width="60"
+                                                    height="60"/>
+                                    <f:facet name="caption">
+                                        <h3  class="text-danger" style="margin-top: -10px"><strong>#{dashBoardBean.numeroPessoas}</strong> Usuários</h3>
+                                        <p>Servidores da Casa Civil...</p>
+                                    </f:facet>
+                                </b:thumbnail>
+                            </h:link>
+                        </b:column>
+                        <b:column col-sm="4" col-md="6" col-lg="4">
+                            <h:link outcome="/departamento/lista" style="text-decoration: none;">
+                                <b:thumbnail class="thumb">
+                                    <h:graphicImage library="algaworks" 
+                                                    name="/images/icons/departamento.ico"
+                                                    class="img-responsive"
+                                                    width="60"
+                                                    height="60"/>
+                                    <f:facet name="caption">
+                                        <h3 class="text-danger" style="margin-top: -10px"><strong>#{dashBoardBean.numeroDepartamentoes}</strong> Departamentos</h3>
+                                        <p>Distribuidos pelo palácio...</p>
+                                    </f:facet>
+                                </b:thumbnail>
+                            </h:link>
+                        </b:column>
+                        <b:column col-sm="4" col-md="12" col-lg="4">
+                            <h:link outcome="/dispositivo/lista" style="text-decoration: none;">
+                                <b:thumbnail class="thumb">
+                                    <h:graphicImage library="algaworks" 
+                                                    name="/images/icons/hd.ico"
+                                                    class="img-responsive"
+                                                    width="60"
+                                                    height="60"/>
+                                    <f:facet name="caption">
+                                        <h3 class="text-danger" style="margin-top: -10px"><strong>#{dashBoardBean.numeroDispositivos}</strong> Dispositivos</h3>
+                                        <p>Computadores, impressoras, scanners, etc...</p>
+                                    </f:facet>
+                                </b:thumbnail>
+                            </h:link>
+                        </b:column>
+
+                    </div>
+
+                    <hr/>
+
+                    <div class="row margin-top-30">
+
+                        <p:repeat value="#{dashBoardBean.tiposDispositivos}" var="tipo">
+                            <b:column col-sm="6" col-md="4" col-lg="3">
+                                <b:thumbnail>
+                                    <h:graphicImage library="algaworks" 
+                                                    name="/images/icons/#{tipo.descricao.toLowerCase()}.ico"
+                                                    class="img-responsive"
+                                                    width="60"
+                                                    height="60"/>
+                                    <f:facet name="caption">
+                                        <h3 class="text-primary">#{tipo.descricao}</h3>
+                                        <div style="font-size: 26px; margin-top: -15px"><strong>#{dashBoardBean.getNumeroTotalTipoDispositivo(tipo)}</strong></div>
+                                    </f:facet>
+                                </b:thumbnail>
+                            </b:column>
+
+                        </p:repeat>
+
+
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </ui:define>
+</ui:composition>
